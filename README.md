@@ -3,15 +3,15 @@ collectd-iostat-python
 
 Collectd-iostat-python is an iostat plugin for collectd that allows you to graph Linux iostat metrics in graphite or other output formats that are supported by collectd.
 
-This plugin (and mostly that README) is rewrite of [kieran's|https://github.com/keirans/collectd-iostat] [collectd-iostat|https://github.com/keirans/collectd-iostat] in Python and [collectd-python|http://collectd.org/documentation/manpages/collectd-python.5.shtml] instead of Ruby and [collectd-exec|https://collectd.org/documentation/manpages/collectd-exec.5.shtml]
+This plugin (and mostly this README) is rewrite of [kieran's](https://github.com/keirans/collectd-iostat) [collectd-iostat](https://github.com/keirans/collectd-iostat) in Python and [collectd-python](http://collectd.org/documentation/manpages/collectd-python.5.shtml) instead of Ruby and [collectd-exec](https://collectd.org/documentation/manpages/collectd-exec.5.shtml)
 
 Why ?
 -------
-Disk performance is quite crucial for most of modern server applications, especially databases. E.g. MySQL - check out [this slides|http://www.percona.com/live/mysql-conference-2013/sessions/monitoring-io-performance-using-iostat-and-pt-diskstats] from Percona Live conference.
+Disk performance is quite crucial for most of modern server applications, especially databases. E.g. MySQL - check out [this slides](http://www.percona.com/live/mysql-conference-2013/sessions/monitoring-io-performance-using-iostat-and-pt-diskstats) from Percona Live conference.
 
 Although collectd provides disk statistics out of the box, graphing the metrics as shown by iostat was found to be more useful and graphic, because iostat reports usage of block devices, partitions, multipath devices and LVM volumes.
 
-Also this plugin was rewritten in Python, because its a preferrable language for siteops' tools on my current job, and choice of using [collectd-python|http://collectd.org/documentation/manpages/collectd-python.5.shtml] instead of [collectd-exec|https://collectd.org/documentation/manpages/collectd-exec.5.shtml] was made for performance and stability reasons.
+Also this plugin was rewritten in Python, because its a preferable language for siteops' tools on my current job, and choice of using [collectd-python](http://collectd.org/documentation/manpages/collectd-python.5.shtml) instead of [collectd-exec](https://collectd.org/documentation/manpages/collectd-exec.5.shtml) was made for performance and stability reasons.
 
 How ?
 -------
@@ -48,9 +48,7 @@ In the case of Graphite, collectd should be writing data to graphite in the *hos
 
 Technical notes
 -------
-For parsing iostat output I'm using [jakamkon's|https://bitbucket.org/jakamkon] [python-iostat|https://bitbucket.org/jakamkon/python-iostat] python module, but as internal part of script instead of separate module.
-
-
+For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon) [python-iostat](https://bitbucket.org/jakamkon/python-iostat) python module, but as internal part of script instead of separate module.
 
 Additional reading
 -------
@@ -58,9 +56,9 @@ Additional reading
 
 * [Custom Collectd Plug-ins for Linux](http://support.rightscale.com/12-Guides/RightScale_101/08-Management_Tools/Monitoring_System/Writing_custom_collectd_plugins/Custom_Collectd_Plug-ins_for_Linux)
 
-* [python-iostat|https://bitbucket.org/jakamkon/python-iostat]
+* [python-iostat](https://bitbucket.org/jakamkon/python-iostat)
 
-* [collectd-iostat|https://github.com/keirans/collectd-iostat]
+* [collectd-iostat](https://github.com/keirans/collectd-iostat)
 
 Contact
 -------
