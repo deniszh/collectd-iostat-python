@@ -48,7 +48,7 @@ In the case of Graphite, collectd should be writing data to graphite in the *hos
 
 Technical notes
 -------
-For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon) [python-iostat](https://bitbucket.org/jakamkon/python-iostat) python module, but as internal part of script instead of separate module.
+For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon) [python-iostat](https://bitbucket.org/jakamkon/python-iostat) python module, but as internal part of script instead of separate module because of couple of fixes - using Kbytes instead of blocks, adding -N to iostat for LVM enpoint resolving etc.
 
 Additional reading
 -------
