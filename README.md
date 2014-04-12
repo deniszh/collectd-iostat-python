@@ -9,7 +9,7 @@ Why ?
 -------
 Disk performance is quite crucial for most of modern server applications, especially databases. E.g. MySQL - check out [this slides](http://www.percona.com/live/mysql-conference-2013/sessions/monitoring-io-performance-using-iostat-and-pt-diskstats) from Percona Live conference.
 
-Although collectd provides disk statistics out of the box, graphing the metrics as shown by iostat was found to be more useful and graphic, because iostat reports usage of block devices, partitions, multipath devices and LVM volumes.
+Although collectd [provides disk statistics out of the box](https://collectd.org/wiki/index.php/Plugin:Disk), graphing the metrics as shown by iostat was found to be more useful and graphic, because iostat reports usage of block devices, partitions, multipath devices and LVM volumes.
 
 Also this plugin was rewritten in Python, because its a preferable language for siteops' tools on my current job, and choice of using [collectd-python](http://collectd.org/documentation/manpages/collectd-python.5.shtml) instead of [collectd-exec](https://collectd.org/documentation/manpages/collectd-exec.5.shtml) was made for performance and stability reasons.
 
