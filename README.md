@@ -37,21 +37,29 @@ Configure collectd's python plugin to execute the iostat plugin using a stanza s
 
         <Module collectd_iostat_python>
             Path "/usr/bin/iostat"
-            Interval 10
+            Interval 2
+            Count 2
             Verbose False
         </Module>
     </Plugin>
 
 Once functioning, the iostat data should then be visible via your various output plugins.
 
-In the case of Graphite, collectd should be writing data to graphite in the *hostname_domain_tld.collectd_iostat_python.gauge-DEVICE.column-name* style namespaceles have been included for reference to assist in setting this up, see the _rewrite-rules.conf_ file for more information.
+In the case of Graphite, collectd should be writing data to graphite in the *hostname_domain_tld.collectd_iostat_python.DEVICE.column-name* style namespaces.
+Symbols like '/','-' and '%' in metric names (but not in device names) automatically replacing by underscores (i.e. '_')
+ 
+Please note that plugin will take only last line of iostat output, so big Count numbers also have no sense, but Count needs to be more than 1 to get actual and not historical data. And please make Interval * Count << Collectd.INTERVAL (20 seconds by default). I found e.g. Count=2 and Interval=2 works quite well for me.
+
 
 Technical notes
 -------
-For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon) [python-iostat](https://bitbucket.org/jakamkon/python-iostat) python module, but as internal part of script instead of separate module because of couple of fixes - using Kbytes instead of blocks, adding -N to iostat for LVM enpoint resolving etc.
+For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon) [python-iostat](https://bitbucket.org/jakamkon/python-iostat) python module, but as internal part of script instead of separate module because of couple of fixes - using Kbytes instead of blocks, adding -N to iostat for LVM enpoint resolving, migration to suprocess module as replacement of deprecated popen3, objectification etc.
+
 
 Additional reading
 -------
+* [man iostat(1)](http://linux.die.net/man/1/iostat)
+
 * [Graphite @ The Architecture of Open Source Applications](http://www.aosabook.org/en/graphite.html)
 
 * [Custom Collectd Plug-ins for Linux](http://support.rightscale.com/12-Guides/RightScale_101/08-Management_Tools/Monitoring_System/Writing_custom_collectd_plugins/Custom_Collectd_Plug-ins_for_Linux)
