@@ -56,17 +56,22 @@ Technical notes
 For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon) [python-iostat](https://bitbucket.org/jakamkon/python-iostat) python module, but as internal part of script instead of separate module because of couple of fixes - using Kbytes instead of blocks, adding -N to iostat for LVM enpoint resolving, migration to suprocess module as replacement of deprecated popen3, objectification etc.
 
 
+TODO
+-------
+Maybe some data aggregation needed, e.g. we can use some max / avg aggregation of data across intervals instead of picking last line of iostat output.
+
+
 Additional reading
 -------
 * [man iostat(1)](http://linux.die.net/man/1/iostat)
-
-* [Graphite @ The Architecture of Open Source Applications](http://www.aosabook.org/en/graphite.html)
 
 * [Custom Collectd Plug-ins for Linux](http://support.rightscale.com/12-Guides/RightScale_101/08-Management_Tools/Monitoring_System/Writing_custom_collectd_plugins/Custom_Collectd_Plug-ins_for_Linux)
 
 * [python-iostat](https://bitbucket.org/jakamkon/python-iostat)
 
 * [collectd-iostat](https://github.com/keirans/collectd-iostat)
+
+* [Graphite @ The Architecture of Open Source Applications](http://www.aosabook.org/en/graphite.html)
 
 Contact
 -------
