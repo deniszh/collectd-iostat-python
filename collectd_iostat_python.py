@@ -13,11 +13,12 @@
 # https://bitbucket.org/jakamkon/python-iostat by Kuba Kończyk <jakamkon at users.sourceforge.net>
 #
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __author__ = 'denis.zhdanov@gmail.com'
 
 import sys
 import subprocess
+import signal
 
 class IOStatError(Exception):
     pass
@@ -190,6 +191,15 @@ class IOMon(object):
                 metric_name = metric.replace('/', '_').replace('-', '_').replace('%', '_')
                 self.dispatch_value(disk, 'gauge', metric_name, ds[disk][metric])
 
+def restore_sigchld():
+    """
+    Restore SIGCHLD handler for python <= v2.6
+    It will BREAK exec plugin!!!
+    See https://github.com/deniszh/collectd-iostat-python/issues/2 for details
+    """
+    if sys.version_info[0] == 2 and sys.version_info[1] <= 6:
+       signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
 if __name__ == '__main__':
     iostat = IOStat(interval=2, count=2)
     ds = iostat.get_diskstats()
@@ -202,5 +212,6 @@ else:
     import collectd
     iomon = IOMon()
     # register callbacks
+    collectd.register_init(restore_sigchld)
     collectd.register_config(iomon.configure_callback)
     collectd.register_read(iomon.read_callback)
