@@ -58,7 +58,7 @@ For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon)
 
 Compatibility
 -------
-Plugin was tested on Ubuntu 12.04/14.04 (collectd 5.2/5.3/5.4, python 2.7) and CentOS (collectd 5.4 / python 2.6). Please note that if running python 2.6 or older (i.e. on CentOS and its derivatives) we trying to restore SIGCHLD signal handler to mitigate [this bug](http://bugs.python.org/issue1731717) and according to (collectd documentation)[https://collectd.org/documentation/manpages/collectd-python.5.shtml#configuration] it will break collectd exec plugin, unfortunately.
+Plugin was tested on Ubuntu 12.04/14.04 (collectd 5.2/5.3/5.4, python 2.7) and CentOS (collectd 5.4 / python 2.6). Please note that if running python 2.6 or older (i.e. on CentOS and its derivatives) we trying to restore SIGCHLD signal handler to mitigate [this bug](http://bugs.python.org/issue1731717) and according to [collectd documentation](https://collectd.org/documentation/manpages/collectd-python.5.shtml#configuration) it will break collectd exec plugin, unfortunately.
 
 
 
