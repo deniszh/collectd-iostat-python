@@ -56,6 +56,12 @@ Technical notes
 For parsing iostat output I'm using [jakamkon's](https://bitbucket.org/jakamkon) [python-iostat](https://bitbucket.org/jakamkon/python-iostat) python module, but as internal part of script instead of separate module because of couple of fixes - using Kbytes instead of blocks, adding -N to iostat for LVM endpoint resolving, migration to subprocess module as replacement of deprecated popen3, objectification etc.
 
 
+Compatibility
+-------
+Plugin was tested to Ubuntu 12.04/14.04 (collectd 5.2/5.3/5.4, python 2.7) and CentOS (collectd 5.4 / python 2.6). Please note that if running python 2.6 or older (i.e. on CentOS and its derivatives) we trying to restore SIGCHLD signal handler to mitigate [this bug](http://bugs.python.org/issue1731717) and according to (collectd documentation)[https://collectd.org/documentation/manpages/collectd-python.5.shtml#configuration] it will break collectd exec plugin, unfortunately.
+
+
+
 TODO
 -------
 Maybe some data aggregation needed, e.g. we can use some max / avg aggregation of data across intervals instead of picking last line of iostat output.
