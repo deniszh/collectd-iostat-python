@@ -156,7 +156,7 @@ class IOMon(object):
             elif node.key == 'Disks':
                 self.iostat_disks = str(node.values[0]).split(',')
             elif node.key == 'Verbose':
-                self.verbose_logging = bool(node.values[0])
+                self.verbose_logging = str(node.values[0]) == 'True'
             else:
                 collectd.warning('collectd-iostat-python plugin: Unknown config key: %s.' % node.key)
         self.log_verbose('Configured with iostat=%s, interval=%s, count=%s, disks=%s' %
