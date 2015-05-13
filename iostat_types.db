@@ -1,0 +1,11 @@
+avg_request_queue           value:GAUGE:0:U
+avg_request_size            value:GAUGE:0:U
+avg_service_time            value:GAUGE:0:U
+avg_wait_time               value:GAUGE:0:U
+blocks                      value:GAUGE:0:U
+blocks_per_second           value:GAUGE:0:U
+bytes_per_second            value:GAUGE:0:U
+transfers_per_second        value:GAUGE:0:U
+per_second                  value:GAUGE:0:U
+requests_merged_per_second  value:GAUGE:0:U
+sectors_per_second          value:GAUGE:0:U
