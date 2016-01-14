@@ -143,6 +143,12 @@ Additional reading
 * [collectd-iostat](https://github.com/keirans/collectd-iostat)
 * [Graphite @ The Architecture of Open Source Applications](http://www.aosabook.org/en/graphite.html)
 
+License
+-------
+
+[MIT](http://mit-license.org/)
+
+
 Support
 -------
 
