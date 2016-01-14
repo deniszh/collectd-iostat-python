@@ -87,7 +87,8 @@ TypesDB "/usr/share/collectd/iostat_types.db"
 ```
 
 Once functioning, the `iostat` data should then be visible via your various
-output plugins.
+output plugins. Please note, that you need to restart collectd service after
+plugin installation, as usual.
 
 In the case of Graphite, Collectd should be writing data in the
 `hostname_domain_tld.collectd_iostat_python.DEVICE.column-name` style namespaces.
@@ -141,6 +142,11 @@ Additional reading
 * [python-iostat](https://bitbucket.org/jakamkon/python-iostat)
 * [collectd-iostat](https://github.com/keirans/collectd-iostat)
 * [Graphite @ The Architecture of Open Source Applications](http://www.aosabook.org/en/graphite.html)
+
+Support
+-------
+
+Please do not send me PMs in Twitter with issues. Just open an [issue](https://github.com/deniszh/collectd-iostat-python/issues) on [projects' Github](https://github.com/deniszh/collectd-iostat-python) instead and I'll respond ASAP!
 
 
 Contact
