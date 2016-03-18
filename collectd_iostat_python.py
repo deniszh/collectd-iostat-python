@@ -255,6 +255,7 @@ class IOMon(object):
         if len(type_instance):
             val.type_instance = type_instance
         val.values = [value, ]
+        val.meta={'0': True}
         val.dispatch()
 
     def read_callback(self):
