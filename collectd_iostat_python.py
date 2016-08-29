@@ -155,6 +155,7 @@ class IOMon(object):
     def __init__(self):
         self.plugin_name = 'collectd-iostat-python'
         self.iostat_path = '/usr/bin/iostat'
+        self.interval = 60.0
         self.iostat_interval = 2
         self.iostat_count = 2
         self.iostat_disks = []
@@ -209,6 +210,8 @@ class IOMon(object):
             if node.key == 'Path':
                 self.iostat_path = val
             elif node.key == 'Interval':
+                self.interval = float(val)
+            elif node.key == 'IostatInterval':
                 self.iostat_interval = int(float(val))
             elif node.key == 'Count':
                 self.iostat_count = int(float(val))
@@ -236,6 +239,8 @@ class IOMon(object):
                 self.iostat_count,
                 self.iostat_disks,
                 self.iostat_disks_regex))
+
+        collectd.register_read(self.read_callback, self.interval)
 
     def dispatch_value(self, plugin_instance, val_type, type_instance, value):
         """
@@ -326,4 +331,3 @@ else:
     # Register callbacks
     collectd.register_init(restore_sigchld)
     collectd.register_config(iomon.configure_callback)
-    collectd.register_read(iomon.read_callback)
