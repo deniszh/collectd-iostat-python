@@ -20,6 +20,7 @@ import signal
 import string
 import subprocess
 import sys
+import pyudev
 
 
 __version__ = '0.0.3'
@@ -161,6 +162,7 @@ class IOMon(object):
         self.iostat_disks = []
         self.iostat_nice_names = False
         self.iostat_disks_regex = ''
+        self.iostat_udevnameattr = ''
         self.verbose_logging = False
         self.names = {
             'tps': {'t': 'transfers_per_second'},
@@ -221,6 +223,8 @@ class IOMon(object):
                 self.iostat_nice_names = val in ['True', 'true']
             elif node.key == 'DisksRegex':
                 self.iostat_disks_regex = val
+            elif node.key == 'UdevNameAttr':
+                self.iostat_udevnameattr = val
             elif node.key == 'PluginName':
                 self.plugin_name = val
             elif node.key == 'Verbose':
@@ -233,12 +237,13 @@ class IOMon(object):
 
         self.log_verbose(
             'Configured with iostat=%s, interval=%s, count=%s, disks=%s, '
-            'disks_regex=%s' % (
+            'disks_regex=%s udevnameattr=%s' % (
                 self.iostat_path,
                 self.iostat_interval,
                 self.iostat_count,
                 self.iostat_disks,
-                self.iostat_disks_regex))
+                self.iostat_disks_regex,
+                self.iostat_udevnameattr))
 
         collectd.register_read(self.read_callback, self.interval)
 
@@ -279,6 +284,7 @@ class IOMon(object):
             self.log_verbose('%s plugin: No info received.' % self.plugin_name)
             return
 
+        context = pyudev.Context()
         for disk in ds:
             for name in ds[disk]:
                 if self.iostat_nice_names and name in self.names:
@@ -298,8 +304,17 @@ class IOMon(object):
                     type_instance = name.translate(tbl)
                     value = ds[disk][name]
 
-                self.dispatch_value(
-                    disk, val_type, type_instance, value)
+                if self.iostat_udevnameattr:
+                    device=pyudev.Device.from_device_file(context,"/dev/" + disk)
+                    persistent_name = device.get(self.iostat_udevnameattr)
+                    if persistent_name:
+                        self.dispatch_value(
+                            persistent_name, val_type, type_instance, value)
+                    else:
+                        self.log_verbose('Unable to determine disk name based on UdevNameAttr: %s' % self.iostat_udevnameattr)
+                else:
+                    self.dispatch_value(
+                        disk, val_type, type_instance, value)
 
 
 def restore_sigchld():

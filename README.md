@@ -86,6 +86,13 @@ TypesDB "/usr/share/collectd/types.db"
 TypesDB "/usr/share/collectd/iostat_types.db"
 ```
 
+In large and changing environments it benefital if your device statistics maintain the same device names across reboots or reconfigurations so that historical data is not compromised. This can be achived by enabling persistent naming based on udev attributes.
+Simply enable persistent naming by setting UdevNameAttr to the attribute you want to use to name your devices. A good example would be ID_SERIAL which is persistent and unique per device. To find useful attributes you can use `udevadm info /dev/<devicename>`
+```
+# Enable persistent device naming
+UdevNameAttr "ID_SERIAL"
+```
+
 Once functioning, the `iostat` data should then be visible via your various
 output plugins. Please note, that you need to restart collectd service after
 plugin installation, as usual.
