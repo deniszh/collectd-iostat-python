@@ -74,6 +74,13 @@ stanza similar to the following:
 </Plugin>
 ```
 
+If you need to select a subset of the devices listed by iostat you can utilize 
+`DisksRegex` to write a regular expression to select the appropriate devices for your environment.
+```
+# Only collect data for these devices
+DisksRegex "^[hs]d"
+```
+
 If you would like to use more legible metric names (e.g.
 `requests_merged_per_second-read` instead of `rrqm_s`), you have to set
 `NiceNames` to `true` and add load the custom types database (see the
