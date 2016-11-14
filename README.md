@@ -104,8 +104,8 @@ automatically replaced by underscores (i.e. `_`).
 
 Please note that this plugin will take only last line of `iostat` output, so big
 `Count` numbers also have no sense, but `Count` needs to be more than `1` to get
-actual and not historical data. And please make `Interval * Count <<
-Collectd.INTERVAL` (4 seconds by default). The deafult value of `Count=2` and
+actual and not historical data. But please note that `2 * Interval * Count` should be less then 
+`Collectd.INTERVAL`. Default `Collectd.INTERVAL` is 10 seconds, so default value of `Count=2` and
 `Interval=2` works quite well for me.
 
 
