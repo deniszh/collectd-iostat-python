@@ -20,6 +20,7 @@ import signal
 import string
 import subprocess
 import sys
+import re
 import pyudev
 
 
@@ -286,6 +287,8 @@ class IOMon(object):
 
         context = pyudev.Context()
         for disk in ds:
+            if not re.match(self.iostat_disks_regex, disk):
+                continue
             for name in ds[disk]:
                 if self.iostat_nice_names and name in self.names:
                     val_type = self.names[name]['t']

@@ -74,6 +74,20 @@ stanza similar to the following:
 </Plugin>
 ```
 
+If you need to select a subset of the devices listed by iostat you can utilize 
+`DisksRegex` to write a regular expression to select the appropriate devices for your environment.
+```
+# Only collect data for these devices
+DisksRegex "^[hs]d"
+```
+
+In large and changing environments it benefital if your device statistics maintain the same device names across reboots or reconfigurations so that historical data is not compromised. This can be achived by enabling persistent naming based on udev attributes.
+Simply enable persistent naming by setting UdevNameAttr to the attribute you want to use to name your devices. A good example would be ID_SERIAL which is persistent and unique per device. To find useful attributes you can use `udevadm info /dev/<devicename>`
+```
+# Enable persistent device naming
+UdevNameAttr "ID_SERIAL"
+```
+
 If you would like to use more legible metric names (e.g.
 `requests_merged_per_second-read` instead of `rrqm_s`), you have to set
 `NiceNames` to `true` and add load the custom types database (see the
@@ -84,13 +98,6 @@ If you would like to use more legible metric names (e.g.
 TypesDB "/usr/share/collectd/types.db"
 # The custom types database
 TypesDB "/usr/share/collectd/iostat_types.db"
-```
-
-In large and changing environments it benefital if your device statistics maintain the same device names across reboots or reconfigurations so that historical data is not compromised. This can be achived by enabling persistent naming based on udev attributes.
-Simply enable persistent naming by setting UdevNameAttr to the attribute you want to use to name your devices. A good example would be ID_SERIAL which is persistent and unique per device. To find useful attributes you can use `udevadm info /dev/<devicename>`
-```
-# Enable persistent device naming
-UdevNameAttr "ID_SERIAL"
 ```
 
 Once functioning, the `iostat` data should then be visible via your various
