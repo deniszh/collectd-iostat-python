@@ -21,10 +21,14 @@ import string
 import subprocess
 import sys
 import re
-import pyudev
+try:
+    import pyudev
+    pyudev_available = True
+except ImportError:
+    pyudev_available = False
 
 
-__version__ = '0.0.3'
+__version__ = '0.0.5'
 __author__ = 'denis.zhdanov@gmail.com'
 
 
@@ -285,7 +289,9 @@ class IOMon(object):
             self.log_verbose('%s plugin: No info received.' % self.plugin_name)
             return
 
-        context = pyudev.Context()
+        if self.iostat_udevnameattr and pyudev_available:
+            context = pyudev.Context()
+
         for disk in ds:
             if not re.match(self.iostat_disks_regex, disk):
                 continue
@@ -307,8 +313,8 @@ class IOMon(object):
                     type_instance = name.translate(tbl)
                     value = ds[disk][name]
 
-                if self.iostat_udevnameattr:
-                    device=pyudev.Device.from_device_file(context,"/dev/" + disk)
+                if self.iostat_udevnameattr and pyudev_available:
+                    device = pyudev.Device.from_device_file(context, "/dev/" + disk)
                     persistent_name = device.get(self.iostat_udevnameattr)
                     if persistent_name:
                         self.dispatch_value(
