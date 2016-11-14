@@ -87,6 +87,8 @@ Simply enable persistent naming by setting UdevNameAttr to the attribute you wan
 # Enable persistent device naming
 UdevNameAttr "ID_SERIAL"
 ```
+Please note that you need to install [pyudev](https://pyudev.readthedocs.io/en/latest/) Python module for this functionality.
+
 
 If you would like to use more legible metric names (e.g.
 `requests_merged_per_second-read` instead of `rrqm_s`), you have to set
@@ -114,6 +116,8 @@ Please note that this plugin will take only last line of `iostat` output, so big
 actual and not historical data. But please note that `2 * Interval * Count` should be less then 
 `Collectd.INTERVAL`. Default `Collectd.INTERVAL` is 10 seconds, so default value of `Count=2` and
 `Interval=2` works quite well for me.
+
+If you want to use 
 
 
 Technical notes
