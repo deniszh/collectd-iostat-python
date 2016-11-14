@@ -21,7 +21,10 @@ import string
 import subprocess
 import sys
 import re
+<<<<<<< HEAD
 import pyudev
+=======
+>>>>>>> deniszh/master
 
 
 __version__ = '0.0.3'
