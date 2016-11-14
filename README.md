@@ -117,8 +117,6 @@ actual and not historical data. But please note that `2 * Interval * Count` shou
 `Collectd.INTERVAL`. Default `Collectd.INTERVAL` is 10 seconds, so default value of `Count=2` and
 `Interval=2` works quite well for me.
 
-If you want to use 
-
 
 Technical notes
 ---------------
