@@ -84,6 +84,7 @@ class IOStat(object):
         for d in ds:
             if d:
                 d = d.split()
+                d = [re.sub(r',','.',element) for element in d]
                 dev = d.pop(0)
                 if (dev in self.disks) or not self.disks:
                     dstats[dev] = dict([(k, float(v)) for k, v in zip(hdr, d)])
