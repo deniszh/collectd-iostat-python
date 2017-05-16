@@ -45,11 +45,12 @@ class ParseError(IOStatError):
 
 
 class IOStat(object):
-    def __init__(self, path='/usr/bin/iostat', interval=2, count=2, disks=[]):
+    def __init__(self, path='/usr/bin/iostat', interval=2, count=2, disks=[], no_dm_name=False):
         self.path = path
         self.interval = interval
         self.count = count
         self.disks = disks
+        self.no_dm_name = no_dm_name
 
     def parse_diskstats(self, input):
         """
@@ -144,8 +145,13 @@ class IOStat(object):
         """
         Get all avaliable disks statistics that we can get.
         """
-        dstats = self._run(options=['-kNd'])
-        extdstats = self._run(options=['-kNdx'])
+        options=['-','k','N','d']
+        extdoptions=['-','k','N','d','x']
+        if self.no_dm_name:
+            options.remove('N')
+            extdoptions.remove('N')
+        dstats = self._run(options)
+        extdstats = self._run(extdoptions)
         dsd = self._get_childs_data(dstats)
         edd = self._get_childs_data(extdstats)
         ds = self.parse_diskstats(dsd)
@@ -169,7 +175,9 @@ class IOMon(object):
         self.iostat_nice_names = False
         self.iostat_disks_regex = ''
         self.iostat_udevnameattr = ''
+        self.skip_multipath = False
         self.verbose_logging = False
+        self.iostat_no_dm_name = False
         self.names = {
             'tps': {'t': 'transfers_per_second'},
             'Blk_read/s': {'t': 'blocks_per_second', 'ti': 'read'},
@@ -235,6 +243,10 @@ class IOMon(object):
                 self.plugin_name = val
             elif node.key == 'Verbose':
                 self.verbose_logging = val in ['True', 'true']
+            elif node.key == 'SkipPhysicalMultipath':
+                self.skip_multipath = val in [ 'True', 'true' ]
+            elif node.key == 'NoDisplayDMName':
+                self.iostat_no_dm_name = val in [ 'True', 'true' ]
             else:
                 collectd.warning(
                     '%s plugin: Unknown config key: %s.' % (
@@ -243,13 +255,15 @@ class IOMon(object):
 
         self.log_verbose(
             'Configured with iostat=%s, interval=%s, count=%s, disks=%s, '
-            'disks_regex=%s udevnameattr=%s' % (
+            'disks_regex=%s udevnameattr=%s skip_multipath=%s no_dm_name=%s' % (
                 self.iostat_path,
                 self.iostat_interval,
                 self.iostat_count,
                 self.iostat_disks,
                 self.iostat_disks_regex,
-                self.iostat_udevnameattr))
+                self.iostat_udevnameattr,
+                self.skip_multipath,
+                self.iostat_no_dm_name))
 
         collectd.register_read(self.read_callback, self.interval)
 
@@ -283,7 +297,8 @@ class IOMon(object):
             path=self.iostat_path,
             interval=self.iostat_interval,
             count=self.iostat_count,
-            disks=self.iostat_disks)
+            disks=self.iostat_disks,
+            no_dm_name=self.iostat_no_dm_name)
         ds = iostat.get_diskstats()
 
         if not ds:
@@ -296,6 +311,21 @@ class IOMon(object):
         for disk in ds:
             if not re.match(self.iostat_disks_regex, disk):
                 continue
+            if pyudev_available:
+                device = pyudev.Device.from_device_file(context, "/dev/" + disk)
+                if self.skip_multipath:
+                    mp_managed = device.get('DM_MULTIPATH_DEVICE_PATH')
+                    if mp_managed and mp_managed == '1':
+                        self.log_verbose('Skipping physical multipath disk %s' % disk)
+                        continue
+                if self.iostat_udevnameattr:
+                    persistent_name = device.get(self.iostat_udevnameattr)
+                    if not persistent_name:
+                        self.log_verbose('Unable to determine disk name based on UdevNameAttr: %s' % self.iostat_udevnameattr)
+                        persistent_name = disk
+            else:
+                persistent_name = disk
+
             for name in ds[disk]:
                 if self.iostat_nice_names and name in self.names:
                     val_type = self.names[name]['t']
@@ -313,19 +343,8 @@ class IOMon(object):
                     tbl = string.maketrans('/-%', '___')
                     type_instance = name.translate(tbl)
                     value = ds[disk][name]
-
-                if self.iostat_udevnameattr and pyudev_available:
-                    device = pyudev.Device.from_device_file(context, "/dev/" + disk)
-                    persistent_name = device.get(self.iostat_udevnameattr)
-                    if persistent_name:
-                        self.dispatch_value(
-                            persistent_name, val_type, type_instance, value)
-                    else:
-                        self.log_verbose('Unable to determine disk name based on UdevNameAttr: %s' % self.iostat_udevnameattr)
-                else:
-                    self.dispatch_value(
-                        disk, val_type, type_instance, value)
-
+                self.dispatch_value(
+                    persistent_name, val_type, type_instance, value)
 
 def restore_sigchld():
     """

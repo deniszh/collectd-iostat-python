@@ -87,6 +87,16 @@ Simply enable persistent naming by setting UdevNameAttr to the attribute you wan
 # Enable persistent device naming
 UdevNameAttr "ID_SERIAL"
 ```
+
+Please note that you need to install [pyudev](https://pyudev.readthedocs.io/en/latest/) Python module for this functionality.
+
+In a multipath environment, a single physical disk can be exposed as two /dev entries. A device mapper entry is created by multipathd to handle interacting with the disk. Setting SkipPhysicalMultipath causes the physical multipath disks to be skipped, and only the dm- entry to be processed. Physical non-multipathed disks will be processed normally. Enable NoDisplayDMName as well to display the /dev entry instead of the registered device name.
+
+```
+SkipPhysicalMultipath true
+NoDisplayDMName true
+```
+
 Please note that you need to install [pyudev](https://pyudev.readthedocs.io/en/latest/) Python module for this functionality.
 
 
