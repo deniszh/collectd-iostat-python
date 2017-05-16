@@ -70,6 +70,7 @@ stanza similar to the following:
         Verbose false
         NiceNames false
         PluginName collectd_iostat_python
+        IgnoreInactiveMultipath false
     </Module>
 </Plugin>
 ```
@@ -87,6 +88,14 @@ Simply enable persistent naming by setting UdevNameAttr to the attribute you wan
 # Enable persistent device naming
 UdevNameAttr "ID_SERIAL"
 ```
+
+In a multipath disk environment, iostat will see both paths to a physical disk as distinct /dev entries. Sending statistics for those disks, when UdevNameAttr is enabled, can cause incorrect stats for a physical disk to be sent. Enabling IgnoreInactiveMultipath will only processes active disks in a DM multipath environment. 
+
+```
+# Skip inactive multipath disks
+IgnoreInactiveMultipath true
+```
+
 Please note that you need to install [pyudev](https://pyudev.readthedocs.io/en/latest/) Python module for this functionality.
 
 

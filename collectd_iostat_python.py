@@ -235,6 +235,8 @@ class IOMon(object):
                 self.plugin_name = val
             elif node.key == 'Verbose':
                 self.verbose_logging = val in ['True', 'true']
+            elif node.key == 'IgnoreInactiveMultipath':
+                self.multipath = val in [ 'True', 'true' ]
             else:
                 collectd.warning(
                     '%s plugin: Unknown config key: %s.' % (
@@ -296,6 +298,27 @@ class IOMon(object):
         for disk in ds:
             if not re.match(self.iostat_disks_regex, disk):
                 continue
+            if self.iostat_udevnameattr and pyudev_available:
+                device = pyudev.Device.from_device_file(context, "/dev/" + disk)
+                '''
+                SCSI_IDENT_PORT_RELATIVE value of 2 indicates the disk is the
+                active path in a multipath environment. A value of 1 indicates
+                that it is the backup path.
+                '''
+                if self.multipath:
+                    relative = device.get('SCSI_IDENT_PORT_RELATIVE')
+                    mp_managed = device.get('DM_MULTIPATH_DEVICE_PATH')
+                    if mp_managed and relative and relative == '1':
+                        self.log_verbose('Skipping inactive disk %s' % disk)
+                        continue
+
+                persistent_name = device.get(self.iostat_udevnameattr)
+                if not persistent_name:
+                    self.log_verbose('Unable to determine disk name based on UdevNameAttr: %s' % self.iostat_udevnameattr)
+                    persistent_name = disk
+            else:
+                persistent_name = disk
+
             for name in ds[disk]:
                 if self.iostat_nice_names and name in self.names:
                     val_type = self.names[name]['t']
@@ -313,19 +336,8 @@ class IOMon(object):
                     tbl = string.maketrans('/-%', '___')
                     type_instance = name.translate(tbl)
                     value = ds[disk][name]
-
-                if self.iostat_udevnameattr and pyudev_available:
-                    device = pyudev.Device.from_device_file(context, "/dev/" + disk)
-                    persistent_name = device.get(self.iostat_udevnameattr)
-                    if persistent_name:
-                        self.dispatch_value(
-                            persistent_name, val_type, type_instance, value)
-                    else:
-                        self.log_verbose('Unable to determine disk name based on UdevNameAttr: %s' % self.iostat_udevnameattr)
-                else:
-                    self.dispatch_value(
-                        disk, val_type, type_instance, value)
-
+                self.dispatch_value(
+                    persistent_name, val_type, type_instance, value)
 
 def restore_sigchld():
     """
