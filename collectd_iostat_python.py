@@ -300,11 +300,11 @@ class IOMon(object):
                 continue
             if self.iostat_udevnameattr and pyudev_available:
                 device = pyudev.Device.from_device_file(context, "/dev/" + disk)
-                '''
+                """ 
                 SCSI_IDENT_PORT_RELATIVE value of 2 indicates the disk is the
                 active path in a multipath environment. A value of 1 indicates
                 that it is the backup path.
-                '''
+                """ 
                 if self.multipath:
                     relative = device.get('SCSI_IDENT_PORT_RELATIVE')
                     mp_managed = device.get('DM_MULTIPATH_DEVICE_PATH')
