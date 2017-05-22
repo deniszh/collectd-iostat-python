@@ -311,7 +311,7 @@ class IOMon(object):
         for disk in ds:
             if not re.match(self.iostat_disks_regex, disk):
                 continue
-            if pyudev_available:
+            if self.iostat_udevnameattr and pyudev_available:
                 device = pyudev.Device.from_device_file(context, "/dev/" + disk)
                 if self.skip_multipath:
                     mp_managed = device.get('DM_MULTIPATH_DEVICE_PATH')
