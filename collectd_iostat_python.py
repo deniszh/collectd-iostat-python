@@ -75,7 +75,7 @@ class IOStat(object):
         See I{man iostat} for more details.
         """
         dstats = {}
-        dsi = input.rfind('Device:')
+        dsi = input.rfind('Device')
         if dsi == -1:
             raise ParseError('Unknown input format: %r' % input)
 
