@@ -17,7 +17,6 @@
 #
 
 import signal
-import string
 import subprocess
 import sys
 import re
@@ -27,6 +26,11 @@ try:
 except ImportError:
     pyudev_available = False
 
+try:
+    maketrans = ''.maketrans
+except AttributeError:
+    # fallback for Python 2
+    from string import maketrans
 
 __version__ = '0.0.5'
 __author__ = 'denis.zhdanov@gmail.com'
@@ -98,8 +102,8 @@ class IOStat(object):
         """
         avg = {}
 
-        for disk, metrics in stats.iteritems():
-            for mname, metric in metrics.iteritems():
+        for disk, metrics in stats.items():
+            for mname, metric in metrics.items():
                 if mname not in smetrics:
                     continue
                 if mname in avg:
@@ -124,6 +128,7 @@ class IOStat(object):
         return subprocess.Popen(
             args,
             bufsize=1,
+            universal_newlines=True,
             shell=True,
             stdout=subprocess.PIPE,
             close_fds=close_fds)
@@ -157,7 +162,7 @@ class IOStat(object):
         ds = self.parse_diskstats(dsd)
         eds = self.parse_diskstats(edd)
 
-        for dk, dv in ds.iteritems():
+        for dk, dv in ds.items():
             if dk in eds:
                 ds[dk].update(eds[dk])
 
@@ -340,7 +345,7 @@ class IOMon(object):
                         value *= self.names[name]['m']
                 else:
                     val_type = 'gauge'
-                    tbl = string.maketrans('/-%', '___')
+                    tbl = maketrans('/-%', '___')
                     type_instance = name.translate(tbl)
                     value = ds[disk][name]
                 self.dispatch_value(
@@ -362,7 +367,7 @@ if __name__ == '__main__':
 
     for disk in ds:
         for metric in ds[disk]:
-            tbl = string.maketrans('/-%', '___')
+            tbl = maketrans('/-%', '___')
             metric_name = metric.translate(tbl)
             print("%s.%s:%s" % (disk, metric_name, ds[disk][metric]))
 
